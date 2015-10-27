@@ -40,7 +40,7 @@ The data format is `json` and the params is as follow:
 
 # result
 
-The png image is like that:
+The png image is like this:
 
 + ![](http://7q5cly.com1.z0.glb.clouddn.com/hegel1445766000272.png)
 + ![](http://7q5cly.com1.z0.glb.clouddn.com/hegel1445766100377.png)
