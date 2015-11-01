@@ -69,7 +69,7 @@ app.post('/render/', function(request, response) {
 			    });
 
 			    numdays = data.length;
-			    _ref = [6, 50, 20, 8];
+			    _ref = [6, 70, 20, 8];
 			    padt = _ref[0];
 			    padl = _ref[1];
 			    padr = _ref[2];
