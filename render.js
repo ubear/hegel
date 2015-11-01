@@ -22,6 +22,7 @@ app.post('/render/', function(request, response) {
 	var imgHeight = 150;
 	var units = "";
 	var data = request.body;
+	var color = "red";
 
     if(isEmpty(data)){
     	console.log("The post data is empty...");
@@ -31,6 +32,7 @@ app.post('/render/', function(request, response) {
 		 // file name
 		if(data['filename'] !== undefined){
 			filename = data['filename'];
+			svgname = data['filename'].split('.')[0] + '.svg';
 		}
 		if(data['width'] !== undefined && data['height'] !== undefined) {
 			imgWidth = parseInt(data['width']);
@@ -39,11 +41,14 @@ app.post('/render/', function(request, response) {
 		if(data['units'] !== undefined){
 			units = data['units'];
 		}
+		if(data['color'] !== undefined) {
+			color = data['color'];
+		}
 
 		// render chart
 		jsdom.env({ features : { QuerySelector : true },
 			html : content, done : function(errors, window) {
-				var box = window.document.querySelector('#box');
+			var box = window.document.querySelector('#box');
 		    render = function(data, units) {
 		    	var dateEnd, dateStart, daySpan, format, h, max, min, numdays, padb,
 		    	padl, padr, padt, subs, ticks, timeFormat, vis, w, x, xAxis, y, yAxis, _ref;
@@ -94,8 +99,12 @@ app.post('/render/', function(request, response) {
 			    dateStart = data[0][0];
 			    dateEnd = data[data.length - 1][0];
 			    daySpan = Math.round((dateEnd - dateStart) / (1000 * 60 * 60 * 24));
-			    x = d3.time.scale().domain([dateStart, dateEnd]).range([0, w - padl - padr]);
-			    y = d3.scale.linear().domain([min, max]).range([h - padb - padt, 0]);
+			    x = d3.time.scale()
+			          .domain([dateStart, dateEnd])
+			          .range([0, w - padl - padr]);
+			    y = d3.scale.linear()
+			          .domain([min, max])
+			          .range([h - padb - padt, 0]);
 			    if (daySpan === 1) {
 			        ticks = 3;
 			        subs = 6;
@@ -114,11 +123,16 @@ app.post('/render/', function(request, response) {
 			    		  .orient("bottom")
 			    		  .tickFormat(function(d) {
 					        if (daySpan <= 1) {
-					          return d3.time.format('%H:%M')(d)
-					                   .replace(/\s/, '').replace(/^0/, '');
+					          return d3.time
+					                   .format('%H:%M')(d)
+					                   .replace(/\s/, '')
+					                   .replace(/^0/, '');
 					        } else {
-					          return d3.time.format('%m/%d')(d).replace(/\s/, '')
-					                   .replace(/^0/, '').replace(/\/0/, '/');
+					          return d3.time
+					                   .format('%m/%d')(d)
+					                   .replace(/\s/, '')
+					                   .replace(/^0/, '')
+					                   .replace(/\/0/, '/');
 					        }
 					    });
 
@@ -140,7 +154,6 @@ app.post('/render/', function(request, response) {
 			       .call(xAxis);
 
 			    vis.append("svg:g")
-			       // .attr("transform", "translate(0, " + h + ")")
 			       .attr("transform", "translate(0, 0)")
 			       .attr("class", "y axis")
 			       .call(yAxis);
@@ -155,7 +168,7 @@ app.post('/render/', function(request, response) {
 
 			    vis.append('svg:path')
 		           .attr('d', lineGen(data))
-		           .attr('stroke', 'red')
+		           .attr('stroke', color)
 		           .attr('stroke-width', 2)
 		           .attr('fill', 'none');
 			}
@@ -193,7 +206,7 @@ app.post('/render/', function(request, response) {
 }); // end app.post
 
 // png service
-app.get('/:name', function (req, res, next) {
+app.get('/png/:name', function (req, res, next) {
 
 	var filename = req.params.name;
 	console.log('get at /' + filename + ':' + moment().format());
@@ -204,6 +217,31 @@ app.get('/:name', function (req, res, next) {
 	        'x-timestamp': Date.now(),
 	        'x-sent': true,
 	        'Content-Type': 'image/png'
+	    }
+	};
+
+	res.sendFile(filename, options, function (err) {
+		if (err) {
+			console.log(err);
+			res.status(err.status).end();
+		} else {
+			console.log('Sent:', filename);
+	    }
+	});
+});
+
+// png service
+app.get('/svg/:name', function (req, res, next) {
+
+	var filename = req.params.name;
+	console.log('get at /' + filename + ':' + moment().format());
+
+	var options = {
+	    root: __dirname + '/',
+	    headers: {
+	        'x-timestamp': Date.now(),
+	        'x-sent': true,
+	        'Content-Type': 'image/svg+xml'
 	    }
 	};
 
