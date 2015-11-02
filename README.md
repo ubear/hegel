@@ -13,7 +13,7 @@ hegel is a Data Visualization Service written by node.js and d3.js. It renders p
 
 1. `git clone git@github.com:ubear/hegel.git`
 2. install node.js
-3. `npm install`
+3. `cd hegel & npm install`
 4. `node server.js > log.txt`or `nodejs server.js > log.txt`
 
 # post data
