@@ -166,7 +166,7 @@ exports.renderSvgToPng = function(data, units, svgFile, pngFile) {
 		'w': imgWidth,
 		'h': imgHeight,
 		'units': units,
-		'strokeColor': stokeColor,
+		'stokeColor': stokeColor,
 		'stokeWidth': stokeWidth
 	};
 	// console.log(box);
