@@ -122,7 +122,7 @@ var renderD3LineChart = function(data, params) {
         .y(function(d) {
             return y(d[1]);
         }).interpolate("basis");
-	console.log(data);
+
     vis.append('svg:path')
        .attr('d', lineGen(data))
        .attr('stroke', params.stokeColor)
@@ -131,7 +131,7 @@ var renderD3LineChart = function(data, params) {
 }
 
 
-exports.renderSvgToPng = function(data, units, svgFile, pngFile) {
+exports.renderSvgToPng = function(data, units, svgFile) {
 
 	// check the data
 	var imgWidth = 300;
@@ -141,7 +141,7 @@ exports.renderSvgToPng = function(data, units, svgFile, pngFile) {
 	var stokeWidth = 2;
 	var box = global.box;
 
-	console.log(data.data);
+	// console.log(data.data);
 
 	if(data['filename'] !== undefined){
 		pngFile = data['filename'];
@@ -179,14 +179,4 @@ exports.renderSvgToPng = function(data, units, svgFile, pngFile) {
     // generate svg file
     var svgXML = (new xmldom.XMLSerializer()).serializeToString(svgGraph[0][0]);
     fs.writeFile(svgFile, svgXML);
-    // convert to svg to png
-    svg2png(svgFile, pngFile, function (err) {
-        if(err) {
-            console.log(svgFile + ' to ' + pngFile + ' failed.', err);
-            return {"msg": "fail"};
-        } else {
-            console.log(svgFile + ' to ' + pngFile + ' successfully.');
-            return {"msg": "ok", "filename": pngFile};
-        }
-    });
 }; // renderSvgToPng

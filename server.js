@@ -1,10 +1,11 @@
 var fs = require('fs')
 var jsdom = require('jsdom');
 var moment = require('moment');
+var svg2png = require('svg2png');
 var express = require('express');
 var bodyParser = require('body-parser');
-var chart = require('./render.js');
-var tools = require('./tools.js');
+var chart = require('./chart/render.js');
+var tools = require('./lib/tools.js');
 
 var app = express();
 var content = '<svg id="box"></svg>';
@@ -24,15 +25,28 @@ app.post('/render/', function(request, response) {
     	console.log("The post data is empty...");
         response.send({"msg": "The post data is empty."});
      } else {
+     	// handle filename
+     	if(data['filename'] !== undefined){
+			filename = data['filename'];
+			svgname = data['filename'].split('.')[0] + '.svg';
+		}
 		// render chart
 		jsdom.env({ features : { QuerySelector : true },
 			html : content, done : function(errors, window) {
-			box = window.document.querySelector('#box');
-			// console.log(box);
-		    var results = chart.renderSvgToPng(data, svgname, filename);
-		    response.send(results);
-		}
-	});
+				box = window.document.querySelector('#box');
+			    chart.renderSvgToPng(data, svgname);
+			    // convert to png
+			    svg2png(svgname, filename, function (err) {
+			        if(err) {
+			            console.log(svgname + ' to ' + filename + ' failed.', err);
+			            response.send({"msg": "fail"});
+			        } else {
+			            console.log(svgname + ' to ' + filename + ' successfully.');
+			            response.send({"msg": "ok", "filename": filename});
+			        }
+	    		});
+		    }
+	    });
 	}
 }); // end app.post
 
