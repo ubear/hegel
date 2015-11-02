@@ -14,11 +14,11 @@ hegel is a Data Visualization Service written by node.js and d3.js. It renders p
 1. `git clone git@github.com:ubear/hegel.git`
 2. install node.js
 3. `npm install`
-4. `node render.js > log.txt`or `nodejs render.js > log.txt`
+4. `node server.js > log.txt`or `nodejs server.js > log.txt`
 
 # post data
 
-The default address is `localhost:3000`, then post data to the `localhost:3000/render/`, and get png picture from `localhost:3000/filename.png`.
+The default address is `localhost:3000`, then post data to the `localhost:3000/render/`, and get png picture from `localhost:3000/png/filename.png` or get svg picture from `localhost:3000/svg/filename.svg`.
 
 The data format is `json` and the params is as follow:
 
@@ -27,6 +27,8 @@ The data format is `json` and the params is as follow:
   "width": "400",
   "height": "200",
   "units": "%", 
+  "stokeColor": "green",
+  "stokeWidth": 2,
   "filename": "percentage.png",
   "data":[[1445749500.0, 100.0], 
           [1445749800.0, 100.0], 
