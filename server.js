@@ -75,7 +75,7 @@ app.get('/png/:name', function (req, res, next) {
 	});
 });
 
-// png service
+// svg service
 app.get('/svg/:name', function (req, res, next) {
 
 	var filename = req.params.name;
